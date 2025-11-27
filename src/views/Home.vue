@@ -3,6 +3,7 @@ import { ArrowRight, Zap, Shield, Globe, Cpu } from "lucide-vue-next";
 import ParticleBackground from "../components/ParticleBackground.vue";
 import { ref, onMounted } from "vue";
 
+// Headline Typing Logic
 const typedText = ref("");
 const fullText = "Artificial Intelligence";
 const isTyping = ref(true);
@@ -24,8 +25,68 @@ const typeText = () => {
   type();
 };
 
+// Code Block Typing Logic
+const displayedCode = ref([]);
+const codeBlockData = [
+  {
+    tokens: [
+      { text: "const", class: "keyword" },
+      { text: " " },
+      { text: "future", class: "variable" },
+      { text: " = " },
+      { text: "await", class: "keyword" },
+      { text: " " },
+      { text: "AI.create", class: "function" },
+      { text: "({" },
+    ],
+  },
+  {
+    indent: true,
+    tokens: [
+      { text: "intelligence", class: "property" },
+      { text: ": " },
+      { text: "'limitless'", class: "string" },
+      { text: "," },
+    ],
+  },
+  {
+    indent: true,
+    tokens: [
+      { text: "creativity", class: "property" },
+      { text: ": " },
+      { text: "'unbound'", class: "string" },
+    ],
+  },
+  {
+    tokens: [{ text: "});" }],
+  },
+  {
+    tokens: [{ text: "// Welcome to the new era", class: "comment" }],
+  },
+];
+
+const typeCode = async () => {
+  for (const line of codeBlockData) {
+    const currentLine = { indent: line.indent, tokens: [] };
+    displayedCode.value.push(currentLine);
+
+    for (const token of line.tokens) {
+      const currentToken = { ...token, text: "" };
+      currentLine.tokens.push(currentToken);
+
+      for (const char of token.text) {
+        currentToken.text += char;
+        await new Promise((r) => setTimeout(r, 30));
+      }
+    }
+  }
+};
+
 onMounted(() => {
   typeText();
+
+  // Start code typing after a short delay
+  setTimeout(typeCode, 500);
 
   // Scroll Animation Observer
   const observer = new IntersectionObserver(
@@ -53,11 +114,11 @@ onMounted(() => {
       <div class="container hero-content">
         <div class="hero-text">
           <h1 class="hero-title">
-            Experience the Future of <br />
-            <span class="text-gradient typing-container"
-              >{{ typedText
-              }}<span class="cursor" v-if="isTyping">|</span></span
-            >
+            Experience the Future of
+            <div class="typing-wrapper">
+              <span class="text-gradient">{{ typedText }}</span>
+              <span class="cursor" v-if="isTyping">|</span>
+            </div>
           </h1>
           <p class="hero-subtitle">
             Unlock limitless possibilities with our advanced AI model. Built for
@@ -79,22 +140,19 @@ onMounted(() => {
               <div class="dot green"></div>
             </div>
             <div class="card-body">
-              <div class="code-line">
-                <span class="keyword">const</span>
-                <span class="variable">future</span> =
-                <span class="keyword">await</span>
-                <span class="function">AI.create</span>({
+              <div
+                v-for="(line, index) in displayedCode"
+                :key="index"
+                class="code-line"
+                :class="{ indent: line.indent }"
+              >
+                <span
+                  v-for="(token, tIndex) in line.tokens"
+                  :key="tIndex"
+                  :class="token.class"
+                  >{{ token.text }}</span
+                >
               </div>
-              <div class="code-line indent">
-                <span class="property">intelligence</span>:
-                <span class="string">'limitless'</span>,
-              </div>
-              <div class="code-line indent">
-                <span class="property">creativity</span>:
-                <span class="string">'unbound'</span>
-              </div>
-              <div class="code-line">});</div>
-              <div class="code-line comment">// Welcome to the new era</div>
             </div>
           </div>
         </div>
@@ -209,6 +267,14 @@ onMounted(() => {
   letter-spacing: -0.02em;
 }
 
+.typing-wrapper {
+  display: block;
+  min-height: 1.2em; /* Reserve space for the line */
+  white-space: nowrap; /* Prevent wrapping mid-typing */
+  overflow: hidden; /* Hide overflow if it happens */
+  text-overflow: ellipsis; /* Ellipsis if it really doesn't fit */
+}
+
 .hero-subtitle {
   font-size: 1.25rem;
   color: var(--text-secondary);
@@ -321,10 +387,12 @@ onMounted(() => {
   font-family: "Fira Code", monospace;
   font-size: 0.9rem;
   line-height: 1.6;
+  min-height: 160px; /* Prevent layout jump */
 }
 
 .code-line {
   margin-bottom: 0.25rem;
+  min-height: 1.5em; /* Maintain line height */
 }
 
 .indent {
@@ -429,7 +497,12 @@ onMounted(() => {
 }
 
 .cursor {
+  display: inline-block;
+  margin-left: 2px;
+  -webkit-text-fill-color: var(--text-primary);
+  color: var(--text-primary);
   animation: blink 1s infinite;
+  font-weight: 400;
 }
 
 @keyframes blink {
