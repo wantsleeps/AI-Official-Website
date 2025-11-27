@@ -1,3 +1,5 @@
+[简体中文](./README.zh-CN.md) | English
+
 # AI Nexus - Official Website
 
 A modern, futuristic official website for an AI platform, built with Vue 3 and Vite. This project features a high-end design inspired by top-tier tech companies, complete with interactive visual effects and a fully responsive layout.
