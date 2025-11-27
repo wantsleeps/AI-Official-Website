@@ -1,19 +1,29 @@
-<script setup>
+<script setup lang="ts">
 import { onMounted, onUnmounted, ref } from "vue";
 
-const canvasRef = ref(null);
-let animationFrameId;
+const canvasRef = ref<HTMLCanvasElement | null>(null);
+let animationFrameId: number;
 
 const initParticles = () => {
   const canvas = canvasRef.value;
+  if (!canvas) return () => {};
+
   const ctx = canvas.getContext("2d");
+  if (!ctx) return () => {};
+
   let width = (canvas.width = window.innerWidth);
   let height = (canvas.height = window.innerHeight);
 
-  const particles = [];
+  const particles: Particle[] = [];
   const particleCount = Math.min((width * height) / 10000, 100); // Responsive count
 
   class Particle {
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    size: number;
+
     constructor() {
       this.x = Math.random() * width;
       this.y = Math.random() * height;
@@ -31,6 +41,7 @@ const initParticles = () => {
     }
 
     draw() {
+      if (!ctx) return;
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
       ctx.fillStyle =

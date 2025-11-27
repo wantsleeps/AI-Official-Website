@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ArrowRight, Zap, Shield, Globe, Cpu } from "lucide-vue-next";
 import ParticleBackground from "../components/ParticleBackground.vue";
 import { ref, onMounted } from "vue";
@@ -26,8 +26,18 @@ const typeText = () => {
 };
 
 // Code Block Typing Logic
-const displayedCode = ref([]);
-const codeBlockData = [
+interface Token {
+  text: string;
+  class?: string;
+}
+
+interface CodeLine {
+  indent?: boolean;
+  tokens: Token[];
+}
+
+const displayedCode = ref<CodeLine[]>([]);
+const codeBlockData: CodeLine[] = [
   {
     tokens: [
       { text: "const", class: "keyword" },
@@ -67,11 +77,11 @@ const codeBlockData = [
 
 const typeCode = async () => {
   for (const line of codeBlockData) {
-    const currentLine = { indent: line.indent, tokens: [] };
+    const currentLine: CodeLine = { indent: line.indent, tokens: [] };
     displayedCode.value.push(currentLine);
 
     for (const token of line.tokens) {
-      const currentToken = { ...token, text: "" };
+      const currentToken: Token = { ...token, text: "" };
       currentLine.tokens.push(currentToken);
 
       for (const char of token.text) {
@@ -90,7 +100,7 @@ onMounted(() => {
 
   // Scroll Animation Observer
   const observer = new IntersectionObserver(
-    (entries) => {
+    (entries: IntersectionObserverEntry[]) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add("animate-in");

@@ -10,7 +10,7 @@ const router = createRouter({
       component: Home,
     },
   ],
-  scrollBehavior(to, from, savedPosition) {
+  scrollBehavior(to, _from, _savedPosition) {
     if (to.hash) {
       return {
         el: to.hash,
