@@ -3,6 +3,9 @@ import { ref, onMounted, onUnmounted } from "vue";
 import { RouterLink } from "vue-router";
 import { Sparkles, Menu, X } from "lucide-vue-next";
 import ThemeToggle from "./ThemeToggle.vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const isScrolled = ref(false);
 const isMobileMenuOpen = ref(false);
@@ -33,11 +36,11 @@ onUnmounted(() => {
       </RouterLink>
 
       <div class="desktop-menu">
-        <a href="#features" class="nav-link">Features</a>
-        <a href="#about" class="nav-link">About</a>
-        <a href="#pricing" class="nav-link">Pricing</a>
+        <a href="#features" class="nav-link">{{ t("nav.features") }}</a>
+        <a href="#about" class="nav-link">{{ t("nav.about") }}</a>
+        <a href="#pricing" class="nav-link">{{ t("nav.pricing") }}</a>
         <ThemeToggle />
-        <button class="btn btn-primary">Get Started</button>
+        <button class="btn btn-primary">{{ t("nav.getStarted") }}</button>
       </div>
 
       <div class="mobile-actions">
@@ -51,16 +54,24 @@ onUnmounted(() => {
 
     <!-- Mobile Menu -->
     <div class="mobile-menu" :class="{ 'is-open': isMobileMenuOpen }">
-      <a href="#features" class="mobile-link" @click="isMobileMenuOpen = false"
-        >Features</a
+      <a
+        href="#features"
+        class="mobile-link"
+        @click="isMobileMenuOpen = false"
+        >{{ t("nav.features") }}</a
       >
-      <a href="#about" class="mobile-link" @click="isMobileMenuOpen = false"
-        >About</a
+      <a href="#about" class="mobile-link" @click="isMobileMenuOpen = false">{{
+        t("nav.about")
+      }}</a>
+      <a
+        href="#pricing"
+        class="mobile-link"
+        @click="isMobileMenuOpen = false"
+        >{{ t("nav.pricing") }}</a
       >
-      <a href="#pricing" class="mobile-link" @click="isMobileMenuOpen = false"
-        >Pricing</a
-      >
-      <button class="btn btn-primary mobile-cta">Get Started</button>
+      <button class="btn btn-primary mobile-cta">
+        {{ t("nav.getStarted") }}
+      </button>
     </div>
   </nav>
 </template>
