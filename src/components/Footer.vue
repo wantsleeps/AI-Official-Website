@@ -53,10 +53,14 @@ import { Sparkles, Github, Twitter, Linkedin } from "lucide-vue-next";
 
 <style scoped>
 .footer {
-  background-color: var(--bg-secondary);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur); /* Safari support */
+  border-top: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow); /* Added shadow for depth */
   padding: 4rem 0 2rem;
   margin-top: auto;
-  border-top: 1px solid var(--border-color);
+  position: relative; /* Context for glass effect */
 }
 
 .footer-content {

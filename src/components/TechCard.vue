@@ -79,18 +79,20 @@ defineProps<Props>();
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
   overflow: hidden;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
 }
 
 /* Front Styling */
 .card-front {
-  background: var(--bg-secondary);
   background: linear-gradient(
     145deg,
-    var(--bg-secondary) 0%,
-    rgba(30, 41, 59, 0.8) 100%
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 100%
   );
 }
 

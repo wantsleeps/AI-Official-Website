@@ -90,9 +90,11 @@ onUnmounted(() => {
 
 .navbar.is-scrolled {
   padding: 1rem 0;
-  background: rgba(var(--bg-primary-rgb), 0.8);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-color);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
 }
 
 .navbar-content {

@@ -87,6 +87,8 @@ const codeBlockData: CodeLine[] = [
 ];
 
 const typeCode = async () => {
+  displayedCode.value = []; // Reset
+
   for (const line of codeBlockData) {
     const currentLine: CodeLine = { indent: line.indent, tokens: [] };
     displayedCode.value.push(currentLine);
@@ -97,9 +99,12 @@ const typeCode = async () => {
 
       for (const char of token.text) {
         currentToken.text += char;
-        await new Promise((r) => setTimeout(r, 30));
+        // Natural typing delay
+        // await new Promise((r) => setTimeout(r, 30 + Math.random() * 40));
       }
     }
+    // Pause at end of line
+    await new Promise((r) => setTimeout(r, 150));
   }
 };
 
@@ -113,6 +118,10 @@ onMounted(() => {
 <template>
   <section class="hero">
     <ParticleBackground />
+    <!-- Liquid Shapes -->
+    <div class="liquid-shape shape-1"></div>
+    <div class="liquid-shape shape-2"></div>
+
     <div class="container hero-content">
       <div class="hero-text">
         <h1 class="hero-title">
@@ -127,14 +136,13 @@ onMounted(() => {
         </p>
         <div class="hero-actions">
           <button class="btn btn-primary">{{ t("hero.getStarted") }}</button>
-          <button class="btn btn-secondary">
+          <button class="btn btn-secondary glass-panel">
             {{ t("hero.documentation") }} <ArrowRight class="icon-right" />
           </button>
         </div>
       </div>
       <div class="hero-visual">
-        <div class="orb"></div>
-        <div class="card glass-card">
+        <div class="card glass-panel">
           <div class="card-header">
             <div class="dot red"></div>
             <div class="dot yellow"></div>
@@ -167,9 +175,28 @@ onMounted(() => {
   display: flex;
   align-items: center;
   padding-top: 80px;
-  background: var(--gradient-hero);
+  background: var(--bg-primary); /* Use primary bg, liquid shapes add color */
   position: relative;
   overflow: hidden;
+}
+
+.shape-1 {
+  top: -10%;
+  left: -10%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, var(--accent-primary), transparent 70%);
+  animation-duration: 20s;
+}
+
+.shape-2 {
+  bottom: -10%;
+  right: -5%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, var(--accent-hover), transparent 70%);
+  animation-duration: 15s;
+  animation-direction: reverse;
 }
 
 .hero-content {
@@ -191,10 +218,10 @@ onMounted(() => {
 
 .typing-wrapper {
   display: block;
-  min-height: 1.2em; /* Reserve space for the line */
-  white-space: nowrap; /* Prevent wrapping mid-typing */
-  overflow: hidden; /* Hide overflow if it happens */
-  text-overflow: ellipsis; /* Ellipsis if it really doesn't fit */
+  min-height: 1.2em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .hero-subtitle {
@@ -211,16 +238,16 @@ onMounted(() => {
 }
 
 .btn-secondary {
-  background-color: transparent;
-  border: 1px solid var(--border-color);
+  /* Inherits glass-panel properties */
   color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  border-radius: 9999px; /* Override glass-panel radius */
 }
 
 .btn-secondary:hover {
-  background-color: var(--bg-secondary);
+  background: rgba(255, 255, 255, 0.2); /* Slightly lighter on hover */
 }
 
 .icon-right {
@@ -232,55 +259,19 @@ onMounted(() => {
   position: relative;
   display: flex;
   justify-content: center;
+  perspective: 1000px;
 }
 
-.orb {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(
-    circle,
-    var(--accent-primary) 0%,
-    transparent 70%
-  );
-  opacity: 0.2;
-  filter: blur(60px);
-  z-index: -1;
-  animation: pulse 4s infinite ease-in-out;
-}
-
-@keyframes pulse {
-  0% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0.2;
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.2);
-    opacity: 0.3;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0.2;
-  }
-}
-
-.glass-card {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
+.glass-panel.card {
   padding: 1.5rem;
   width: 100%;
-  max-width: 400px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  max-width: 450px;
+  transform: rotateY(-5deg) rotateX(5deg);
+  transition: transform 0.5s ease;
 }
 
-.dark .glass-card {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.glass-panel.card:hover {
+  transform: rotateY(0) rotateX(0) scale(1.02);
 }
 
 .card-header {
@@ -297,24 +288,27 @@ onMounted(() => {
 
 .red {
   background-color: #ef4444;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
 }
 .yellow {
   background-color: #f59e0b;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
 }
 .green {
   background-color: #22c55e;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
 }
 
 .card-body {
   font-family: "Fira Code", monospace;
   font-size: 0.9rem;
   line-height: 1.6;
-  min-height: 160px; /* Prevent layout jump */
+  min-height: 160px;
 }
 
 .code-line {
   margin-bottom: 0.25rem;
-  min-height: 1.5em; /* Maintain line height */
+  min-height: 1.5em;
 }
 
 .indent {
@@ -323,28 +317,31 @@ onMounted(() => {
 
 .keyword {
   color: #c084fc;
+  text-shadow: 0 0 5px rgba(192, 132, 252, 0.3);
 }
 .variable {
   color: #60a5fa;
+  text-shadow: 0 0 5px rgba(96, 165, 250, 0.3);
 }
 .function {
   color: #f472b6;
+  text-shadow: 0 0 5px rgba(244, 114, 182, 0.3);
 }
 .string {
   color: #34d399;
+  text-shadow: 0 0 5px rgba(52, 211, 153, 0.3);
 }
 .property {
   color: #93c5fd;
 }
 .comment {
   color: #6b7280;
-  margin-top: 0.5rem;
+  font-style: italic;
 }
 
 .cursor {
   display: inline-block;
   margin-left: 2px;
-  -webkit-text-fill-color: var(--text-primary);
   color: var(--text-primary);
   animation: blink 1s infinite;
   font-weight: 400;
@@ -364,7 +361,6 @@ onMounted(() => {
   .hero-content {
     grid-template-columns: 1fr 1fr;
   }
-
   .hero-title {
     font-size: 4rem;
   }

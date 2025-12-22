@@ -119,11 +119,14 @@ onMounted(() => {
 }
 
 .feature-card {
-  background-color: var(--bg-secondary);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
   padding: 2rem;
   border-radius: 1rem;
   transition: all 0.3s ease;
-  border: 1px solid transparent;
   position: relative;
   overflow: hidden;
 }
@@ -131,7 +134,7 @@ onMounted(() => {
 .feature-card:hover {
   transform: translateY(-10px);
   border-color: var(--accent-primary);
-  box-shadow: 0 10px 30px -10px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 15px 35px rgba(37, 99, 235, 0.25);
 }
 
 .feature-card::before {
@@ -143,8 +146,8 @@ onMounted(() => {
   height: 100%;
   background: radial-gradient(
     circle at center,
-    rgba(37, 99, 235, 0.1) 0%,
-    transparent 70%
+    rgba(37, 99, 235, 0.05) 0%,
+    /* Reduced opacity for subtlety */ transparent 70%
   );
   opacity: 0;
   transition: opacity 0.3s ease;
